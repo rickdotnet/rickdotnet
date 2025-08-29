@@ -1,0 +1,62 @@
+name: Build, Release, and Docker Publish
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    branches: [ 'main' ]
+
+env:
+  DOCKER_REGISTRY: "ghcr.io"
+  IMAGE_NAME: "ghcr.io/${{ github.repository }}"
+  SOLUTION_FILE: ./src/Morty.sln
+  VERSION: "1.0.${{ github.run_number }}"
+
+jobs:
+  dotnet:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore $SOLUTION_FILE
+
+      - name: Build
+        run: dotnet build $SOLUTION_FILE -c Release --no-restore
+
+      - name: Publish
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: dotnet publish $SOLUTION_FILE -c Release -r linux-x64 -o app
+
+      - name: Convert Image Name to Lowercase
+        run: echo "IMAGE_NAME=$(echo ${{ env.IMAGE_NAME }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./.github/Dockerfile
+          push: true
+          tags: |
+            "${{ env.IMAGE_NAME }}:latest"
+            "${{ env.IMAGE_NAME }}:${{ env.VERSION }}"

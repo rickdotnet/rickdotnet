@@ -1,0 +1,11 @@
+{
+  "NatsUrl": "nats://localhost:4222",
+  "Username": "",
+  "Password": "",
+  "Token": "",
+  "Jwt": "",
+  "NKey": "",
+  "Seed": "",
+  "CredsFile": "",
+  "NKeyFile": ""
+}

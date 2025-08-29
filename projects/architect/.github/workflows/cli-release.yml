@@ -1,0 +1,52 @@
+name: CLI Release
+
+on:
+  workflow_dispatch:
+
+env:
+  DOCKER_REGISTRY: "ghcr.io"
+  PROJECT_FILE: ./src/Cli/Cli.csproj
+  VERSION: "0.0.${{ github.run_number }}"
+
+jobs:
+  cli:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore $PROJECT_FILE
+
+      - name: Build
+        run: dotnet build $PROJECT_FILE -c Release --no-restore
+
+      - name: Publish (linux-x64)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: dotnet publish $PROJECT_FILE -c Release -r linux-x64 --self-contained -p:PublishSingleFile=true -o publish/linux-x64
+
+      - name: Package
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p package
+          tar -czvf "package/rick-linux-x64.tar.gz" -C ./publish/linux-x64 .
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ env.VERSION }}"
+          name: "architect CLI v${{ env.VERSION }}"
+          body: "Automated Release"
+          files: package/*
+          draft: false
+          prerelease: false

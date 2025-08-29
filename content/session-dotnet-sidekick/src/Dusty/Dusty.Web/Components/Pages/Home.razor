@@ -1,0 +1,90 @@
+﻿@page "/"
+@using Dusty.Shared.Prompts
+@using Dusty.Shared.Tools
+@using Microsoft.Extensions.AI
+@inject IJSRuntime JSRuntime
+@inject IChatClient ChatClient
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+
+<div class="chat-wrapper">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h3>Chat</h3>
+        </div>
+        <div class="chat-messages" @ref="messagesContainer">
+            @foreach (var message in messages[1..])
+            {
+                <div class="message @(message.Role == ChatRole.User ? "sent" : "received")">
+                    <span>@message.Text</span>
+                    <small>@message.Role</small>
+                </div>
+            }
+        </div>
+        <div class="chat-input">
+            <input type="text" @bind="newMessage" placeholder="Type a message..." @onkeyup="OnKeyUp"/>
+            <button @onclick="SendMessage">Send</button>
+        </div>
+    </div>
+</div>
+
+
+@code{
+    private List<ChatMessage> messages = [];
+    private string newMessage = string.Empty;
+    private ElementReference messagesContainer;
+    private readonly List<AITool> tools = [];
+    private ChatOptions toolOptions = new();
+    
+    protected override void OnInitialized()
+    {
+        messages.Add(new ChatMessage(ChatRole.System, DustyPrompts.Chat));
+        
+        tools.AddRange(Gist.Tools);
+        tools.AddRange(Documents.Tools);
+        //tools.AddRange(Foreman.Tools); // requires NATS
+
+        toolOptions = new ChatOptions
+        {
+            Tools = tools,
+            ToolMode = ChatToolMode.RequireAny,
+        };
+    }
+    private async Task SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(newMessage))
+        {
+            messages.Add(new ChatMessage(ChatRole.User, newMessage));
+            newMessage = string.Empty;
+
+            var response = await ChatClient.GetResponseAsync(messages, cancellationToken: CancellationToken.None);
+            messages.Add(new ChatMessage(ChatRole.Assistant, response.Text));
+
+            // Force UI update
+            StateHasChanged();
+
+            // Wait for DOM to render
+            await Task.Delay(100);
+
+            // Scroll to bottom
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("scrollToBottom", messagesContainer);
+            }
+            catch (Exception ex)
+            {
+                // Log error to console for debugging
+                await JSRuntime.InvokeVoidAsync("console.log", $"Scroll error: {ex.Message}");
+            }
+        }
+    }
+
+    private void OnKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            _ = SendMessage();
+    }
+
+}

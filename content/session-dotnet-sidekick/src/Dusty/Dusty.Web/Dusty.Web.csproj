@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AssemblyName>Dusty.Web</AssemblyName>
+        <RootNamespace>Dusty.Web</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NATS.Extensions.Microsoft.DependencyInjection" Version="2.6.1" />
+      <PackageReference Include="RickDotNet.Aether.Extensions.Microsoft.Hosting" Version="1.0.7" />
+      <PackageReference Include="RickDotNet.Aether.Providers.NATS" Version="1.0.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Dusty.Shared\Dusty.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

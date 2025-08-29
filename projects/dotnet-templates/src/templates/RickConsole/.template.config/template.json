@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "RickDotNet",
+  "classifications": [
+    "Console",
+    "C#",
+    "NET"
+  ],
+  "name": "Rick Console App",
+  "identity": "RickDotNet.Templates.Console",
+  "shortName": "rick-console",
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "RickConsole",
+  "preferNameDirectory": true,
+  "symbols": {
+    "Framework": {
+      "type": "parameter",
+      "description": "The target framework for the project.",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "net8.0",
+          "description": "Target .NET 8"
+        },
+        {
+          "choice": "net9.0",
+          "description": "Target .NET 9"
+        }
+      ],
+      "replaces": "FrameworkParameter",
+      "defaultValue": "net9.0"
+    }
+  }
+}

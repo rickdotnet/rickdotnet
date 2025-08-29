@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json.schemastore.org/ide.host",
+  "host": "Rider, VisualStudio",
+  "icon": "icon.png",
+  "ui": {
+    "group": "RickDotNet",
+    "defaultName": "ConsoleApp",
+    "visible": true
+  }
+}

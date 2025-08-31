@@ -1,0 +1,4 @@
+export PATH="$HOME/.local/share/architect/bin:$PATH"
+
+# zed-launcher lauches with WAYLAND_DISPLAY=''
+alias zed='zed-launcher'

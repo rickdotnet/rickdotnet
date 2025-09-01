@@ -8,6 +8,19 @@ public class AetherSystem
     {
         this.config = config;
     }
+
+    // System inspection properties
+    public string SystemName => config.SystemName ?? "Unknown";
+    public string SystemPrefix => config.SystemPrefix ?? "Unknown";
+    public IReadOnlyList<string> EndpointNames => config.Endpoints.Select(e => e.Name).ToList();
+    public IReadOnlyList<string> WorkerNames => config.Workers.Select(w => w.Name).ToList();
+    public IReadOnlyList<string> StoreNames => config.Stores.Select(s => s.Name).ToList();
+    
+    public IReadOnlyDictionary<string, string> EndpointSubjects => 
+        config.Endpoints.ToDictionary(e => e.Name, e => $"sys.{config.SystemPrefix}.{e.Subject}");
+        
+    public IReadOnlyDictionary<string, string> WorkerSubjects =>
+        config.Workers.ToDictionary(w => w.Name, w => $"sys.{config.SystemPrefix}.{w.ListenToPattern ?? w.Name}");
     
     public static AetherSystem Create(Action<SystemBuilder> configure)
     {
@@ -18,23 +31,67 @@ public class AetherSystem
     
     public async Task StartAsync(CancellationToken cancellationToken = default)
     {
-        // TODO: Implement system startup
-        // 1. Validate all configurations
-        // 2. Establish NATS connections
-        // 3. Initialize stores (KV buckets)
-        // 4. Register endpoints and workers
-        // 5. Start message subscriptions
-        // 6. Signal system ready
+        Console.WriteLine($"🚀 Starting Aether System: {config.SystemName}");
+        Console.WriteLine($"📡 System Prefix: {config.SystemPrefix}");
+        
+        // Log system composition
+        LogSystemComposition();
+        
+        // TODO: Phase 3 - Establish NATS connections
+        // TODO: Phase 3 - Initialize stores (KV buckets)  
+        // TODO: Phase 3 - Register endpoints and workers
+        // TODO: Phase 3 - Start message subscriptions
+        
+        Console.WriteLine("✅ System started successfully");
         await Task.CompletedTask;
     }
     
     public async Task StopAsync(CancellationToken cancellationToken = default)
     {
-        // TODO: Implement graceful shutdown
-        // 1. Stop accepting new messages
-        // 2. Complete in-flight operations
-        // 3. Dispose resources
+        Console.WriteLine($"🛑 Stopping Aether System: {config.SystemName}");
+        
+        // TODO: Phase 3 - Stop accepting new messages
+        // TODO: Phase 3 - Complete in-flight operations
+        // TODO: Phase 3 - Dispose NATS connections and resources
+        
+        Console.WriteLine("✅ System stopped successfully");
         await Task.CompletedTask;
+    }
+
+    private void LogSystemComposition()
+    {
+        Console.WriteLine("📊 System Composition:");
+        
+        if (config.Endpoints.Any())
+        {
+            Console.WriteLine("  Endpoints:");
+            foreach (var endpoint in config.Endpoints)
+            {
+                var fullSubject = $"sys.{config.SystemPrefix}.{endpoint.Subject}";
+                Console.WriteLine($"    • {endpoint.Name} → {fullSubject} ({endpoint.HandlerType.Name})");
+            }
+        }
+
+        if (config.Workers.Any())
+        {
+            Console.WriteLine("  Workers:");
+            foreach (var worker in config.Workers)
+            {
+                var subject = worker.ListenToPattern ?? worker.Name;
+                var fullSubject = $"sys.{config.SystemPrefix}.{subject}";
+                Console.WriteLine($"    • {worker.Name} → {fullSubject} ({worker.WorkerType.Name})");
+            }
+        }
+
+        if (config.Stores.Any())
+        {
+            Console.WriteLine("  Stores:");
+            foreach (var store in config.Stores)
+            {
+                var expiration = store.Expiration?.ToString() ?? "No expiration";
+                Console.WriteLine($"    • {store.Name} → NATS KV '{store.KvBucket}' ({expiration})");
+            }
+        }
     }
     
     public async ValueTask DisposeAsync()

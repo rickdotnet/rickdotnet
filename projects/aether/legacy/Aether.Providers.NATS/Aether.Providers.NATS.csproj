@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Package">
+        <PackageId>RickDotNet.Aether.Providers.NATS</PackageId>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Aether\Aether.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="NATS.Net" Version="2.6.5" />
+    </ItemGroup>
+    
+</Project>

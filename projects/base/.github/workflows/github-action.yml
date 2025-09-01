@@ -1,0 +1,36 @@
+name: RickDotNet.Base Publish
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: "build/version.props"
+  workflow_dispatch:
+
+env:
+  SOLUTION_FILE: src/RickDotNet.sln
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.x
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.SOLUTION_FILE }}
+
+      - name: Build
+        run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test ${{ env.SOLUTION_FILE }} --configuration Release --no-build --verbosity normal
+
+      - name: Pack
+        run: dotnet pack ${{ env.SOLUTION_FILE }} --configuration Release --no-build --output dist
+
+      - name: Push NuGet package
+        run: dotnet nuget push dist/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json

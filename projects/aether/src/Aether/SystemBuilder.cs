@@ -59,15 +59,15 @@ public class SystemBuilder
 
     internal Result<AetherSystem> Build()
     {
-        // Check for errors from child builders first
-        if (buildErrors.Any())
-            return Result.Error<AetherSystem>($"Build errors: {string.Join("; ", buildErrors)}");
-
-        // no op for now
-        ProcessSubjectRouting();
-
         var validationResult = ValidateConfiguration();
-        return validationResult.Select(_=> new AetherSystem(config));
+        validationResult.OnError(error => buildErrors.Add(error));
+            
+        // no op for now
+                ProcessSubjectRouting();
+                
+        return buildErrors.Any() 
+            ? Result.Error<AetherSystem>($"Build errors: {string.Join("; ", buildErrors)}") 
+            : new AetherSystem(config);
     }
 
     private Result<Unit> ValidateConfiguration()

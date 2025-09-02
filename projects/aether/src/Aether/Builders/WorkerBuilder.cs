@@ -1,4 +1,6 @@
-﻿namespace Aether;
+﻿using RickDotNet.Base;
+
+namespace Aether;
 
 public class WorkerBuilder
 {
@@ -30,21 +32,27 @@ public class WorkerBuilder
         return this;
     }
 
-    internal WorkerConfig Build()
+    internal Result<WorkerConfig> Build()
     {
         // TODO: Validate configuration with SubjectValidator
         // - Name is required
         // - Worker type is required and implements expected interface
         // - If no ListenTo pattern, use name as default
 
-        var workerName = name ?? throw new InvalidOperationException("Name is required for worker");
+        if (string.IsNullOrWhiteSpace(name))
+            return Result.Error<WorkerConfig>("Name is required for worker");
+        
+        var workerName = name;
         var listenPattern = listenToPattern ?? workerName; // Use name as default listen pattern
 
-        return new WorkerConfig
+        if (workerType == null)
+            return Result.Error<WorkerConfig>($"Handler is required for worker '{workerName}'");
+
+        return Result.Success(new WorkerConfig
         {
             Name = workerName,
-            WorkerType = workerType ?? throw new InvalidOperationException($"Handler is required for worker '{workerName}'"),
+            WorkerType = workerType,
             ListenToPattern = listenPattern
-        };
+        });
     }
 }

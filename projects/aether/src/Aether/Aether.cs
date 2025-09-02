@@ -1,4 +1,6 @@
-﻿namespace Aether;
+﻿using RickDotNet.Base;
+
+namespace Aether;
 
 public class AetherSystem
 {
@@ -22,7 +24,7 @@ public class AetherSystem
     public IReadOnlyDictionary<string, string> WorkerSubjects =>
         config.Workers.ToDictionary(w => w.Name, w => $"sys.{SystemPrefix}.{w.ListenToPattern ?? w.Name.ToLowerInvariant().Replace(" ", "-")}");
     
-    public static AetherSystem Create(Action<SystemBuilder> configure)
+    public static Result<AetherSystem> Create(Action<SystemBuilder> configure)
     {
         var builder = new SystemBuilder();
         configure(builder);

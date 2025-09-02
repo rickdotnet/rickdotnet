@@ -48,8 +48,9 @@ public class AetherSystemTests
                 store.Named("test-store")
                     .UseNatsKv("test");
             });
-        });
+        }).ValueOrDefault();
 
+        Assert.NotNull(system);
         await system.StartAsync();
         await system.StopAsync();
     }
@@ -57,49 +58,50 @@ public class AetherSystemTests
     [Fact]
     public void SystemValidatesRequiredConfiguration()
     {
-        Assert.Throws<InvalidOperationException>(() =>
-            AetherSystem.Create(_ => { }));
+        var result = AetherSystem.Create(_ => { });
+        Assert.True(result.NotSuccessful);
     }
 
     [Fact]
     public void SystemValidatesDuplicateNames()
     {
-        Assert.Throws<InvalidOperationException>(() =>
-            AetherSystem.Create(system =>
+        var result = AetherSystem.Create(system =>
+        {
+            system.Named("TestSystem").Prefixed("test");
+
+            system.AddEndpoint(endpoint =>
             {
-                system.Named("TestSystem").Prefixed("test");
+                endpoint.Named("duplicate")
+                    .Subject("test.endpoint")
+                    .Handler<TestOrderHandler>();
+            });
 
-                system.AddEndpoint(endpoint =>
-                {
-                    endpoint.Named("duplicate")
-                        .Subject("test.endpoint")
-                        .Handler<TestOrderHandler>();
-                });
-
-                system.AddWorker(worker =>
-                {
-                    worker.Named("duplicate") // Same name as endpoint
-                        .Handler<TestOrderProcessor>();
-                });
-            })
-        );
+            system.AddWorker(worker =>
+            {
+                worker.Named("duplicate") // Same name as endpoint
+                    .Handler<TestOrderProcessor>();
+            });
+        });
+        
+        Assert.True(result.NotSuccessful);
     }
 
     [Fact]
     public void SystemValidatesSubjects()
     {
-        var exception = Assert.Throws<InvalidOperationException>(() =>
-            AetherSystem.Create(system =>
-            {
-                system.Named("TestSystem").Prefixed("test");
+        var result = AetherSystem.Create(system =>
+        {
+            system.Named("TestSystem").Prefixed("test");
 
-                system.AddEndpoint(endpoint =>
-                {
-                    endpoint.Named("bad-endpoint")
-                        .Subject("invalid..subject") // Invalid double dots
-                        .Handler<TestOrderHandler>();
-                });
-            }));
+            system.AddEndpoint(endpoint =>
+            {
+                endpoint.Named("bad-endpoint")
+                    .Subject("invalid..subject") // Invalid double dots
+                    .Handler<TestOrderHandler>();
+            });
+        });
+        
+        Assert.True(result.NotSuccessful);
     }
 
     [Fact]
@@ -128,8 +130,9 @@ public class AetherSystemTests
                 store.Named("order-cache")
                     .UseNatsKv("orders");
             });
-        });
+        }).ValueOrDefault();
 
+        Assert.NotNull(system);
         Assert.Equal("orders", system.SystemName);
         Assert.Equal("orders", system.SystemPrefix);
         Assert.Contains("api-gateway", system.EndpointNames);

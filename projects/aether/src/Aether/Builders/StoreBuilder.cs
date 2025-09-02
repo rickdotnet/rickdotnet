@@ -1,4 +1,6 @@
-﻿namespace Aether;
+﻿using RickDotNet.Base;
+
+namespace Aether;
 
 public class StoreBuilder
 {
@@ -24,20 +26,26 @@ public class StoreBuilder
         return this;
     }
 
-    internal StoreConfig Build()
+    internal Result<StoreConfig> Build()
     {
         // TODO: Validate configuration
         // - Name is required
         // - NATS KV bucket name is required
         // - Expiration is optional
 
-        var storeName = name ?? throw new InvalidOperationException("Name is required for store");
+        if (string.IsNullOrWhiteSpace(name))
+            return Result.Error<StoreConfig>("Name is required for store");
+        
+        var storeName = name;
 
-        return new StoreConfig
+        if (string.IsNullOrWhiteSpace(kvBucket))
+            return Result.Error<StoreConfig>($"KV bucket is required for store '{storeName}'");
+
+        return Result.Success(new StoreConfig
         {
             Name = storeName,
-            KvBucket = kvBucket ?? throw new InvalidOperationException($"KV bucket is required for store '{storeName}'"),
+            KvBucket = kvBucket,
             Expiration = expiration
-        };
+        });
     }
 }

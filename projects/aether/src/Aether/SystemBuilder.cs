@@ -1,8 +1,12 @@
-﻿namespace Aether;
+﻿using RickDotNet.Base;
+using RickDotNet.Extensions.Base;
+
+namespace Aether;
 
 public class SystemBuilder
 {
     private readonly SystemConfig config = new();
+    private readonly List<string> buildErrors = [];
 
     public SystemBuilder Named(string name)
     {
@@ -20,8 +24,12 @@ public class SystemBuilder
     {
         var builder = new EndpointBuilder();
         configure(builder);
-        var endpointConfig = builder.Build();
-        config.Endpoints.Add(endpointConfig);
+        
+        builder.Build().Resolve(
+            onSuccess: success => config.Endpoints.Add(success),
+            onError: error => buildErrors.Add(error)
+        );
+
         return this;
     }
 
@@ -29,8 +37,11 @@ public class SystemBuilder
     {
         var builder = new WorkerBuilder();
         configure(builder);
-        var workerConfig = builder.Build();
-        config.Workers.Add(workerConfig);
+        builder.Build().Resolve(
+            onSuccess: success => config.Workers.Add(success),
+            onError: error => buildErrors.Add(error)
+        );
+
         return this;
     }
 
@@ -38,31 +49,39 @@ public class SystemBuilder
     {
         var builder = new StoreBuilder();
         configure(builder);
-        var storeConfig = builder.Build();
-        config.Stores.Add(storeConfig);
+        builder.Build().Resolve(
+            onSuccess: success => config.Stores.Add(success),
+            onError: error => buildErrors.Add(error)
+        );
+        
         return this;
     }
 
-    internal AetherSystem Build()
+    internal Result<AetherSystem> Build()
     {
-        ValidateConfiguration();
+        // Check for errors from child builders first
+        if (buildErrors.Any())
+            return Result.Error<AetherSystem>($"Build errors: {string.Join("; ", buildErrors)}");
+
+        // no op for now
         ProcessSubjectRouting();
-        
-        return new AetherSystem(config);
+
+        var validationResult = ValidateConfiguration();
+        return validationResult.Select(_=> new AetherSystem(config));
     }
 
-    private void ValidateConfiguration()
+    private Result<Unit> ValidateConfiguration()
     {
         // Validate system configuration
         if (string.IsNullOrWhiteSpace(config.SystemName))
-            throw new InvalidOperationException("System name is required. Use .Named() to set the system name.");
+            return Result.Error("System name is required. Use .Named() to set the system name.");
 
         var systemPrefix = config.SystemPrefix;
         if (string.IsNullOrWhiteSpace(systemPrefix))
             systemPrefix = config.SystemName.ToLowerInvariant().Replace(" ", "-");
-        
+
         if (!SubjectValidator.IsValid(systemPrefix))
-            throw new InvalidOperationException("Invalid system prefix. Must be a valid NATS subject segment.");
+            return Result.Error("Invalid system prefix. Must be a valid NATS subject segment.");
 
         // Validate no duplicate component names
         List<string> allNames = [];
@@ -72,25 +91,26 @@ public class SystemBuilder
 
         var duplicates = allNames.GroupBy(n => n).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
         if (duplicates.Any())
-            throw new InvalidOperationException($"Duplicate component names found: {string.Join(", ", duplicates)}");
+            return Result.Error($"Duplicate component names found: {string.Join(", ", duplicates)}");
 
         // Validate endpoint subjects
         var invalidEndpoints = config.Endpoints
             .Where(e => !SubjectValidator.IsValid(e.Subject))
             .Select(e => e.Subject)
             .ToList();
-       
+
         if (invalidEndpoints.Any())
-            throw new InvalidOperationException($"Invalid endpoints subjects: {string.Join(", ", invalidEndpoints)}");
+            return Result.Error($"Invalid endpoints subjects: {string.Join(", ", invalidEndpoints)}");
 
         var invalidWorkerSubjects = config.Workers
             .Where(w => !SubjectValidator.IsValid(w.ListenToPattern ?? w.Name.ToLowerInvariant().Replace(" ", "-")))
             .Select(w => w.ListenToPattern)
             .ToList();
-        
+
         if (invalidWorkerSubjects.Any())
-            throw new InvalidOperationException($"Invalid workers subjects: {string.Join(", ", invalidWorkerSubjects)}");
-        
+            return Result.Error($"Invalid workers subjects: {string.Join(", ", invalidWorkerSubjects)}");
+
+        return Result.Success();
     }
 
     private void ProcessSubjectRouting()
@@ -98,7 +118,7 @@ public class SystemBuilder
         // Apply system prefix to create full routing subjects
         // This will be used during actual NATS integration
         // For now, we're just validating the pattern will work
-        
+
         foreach (var endpoint in config.Endpoints)
         {
             var fullSubject = $"sys.{config.SystemPrefix}.{endpoint.Subject}";

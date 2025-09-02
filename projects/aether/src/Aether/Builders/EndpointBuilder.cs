@@ -1,4 +1,6 @@
-﻿namespace Aether;
+﻿using RickDotNet.Base;
+
+namespace Aether;
 
 public class EndpointBuilder
 {
@@ -30,7 +32,7 @@ public class EndpointBuilder
         return this;
     }
 
-    internal EndpointConfig Build()
+    internal Result<EndpointConfig> Build()
     {
         // TODO: Validate configuration with SubjectValidator
         // - Name is required
@@ -38,14 +40,20 @@ public class EndpointBuilder
         // - Handler type is required
         // - Handler type implements expected interface
 
-        var endpointName = name ?? throw new InvalidOperationException("Name is required for endpoint");
+        if (string.IsNullOrWhiteSpace(name))
+            return Result.Error<EndpointConfig>("Name is required for endpoint");
+        
+        var endpointName = name;
         var endpointSubject = subject ?? endpointName; // Use name as default subject
 
-        return new EndpointConfig
+        if (handlerType == null)
+            return Result.Error<EndpointConfig>($"Handler is required for endpoint '{endpointName}'");
+
+        return Result.Success(new EndpointConfig
         {
             Name = endpointName,
             Subject = endpointSubject,
-            HandlerType = handlerType ?? throw new InvalidOperationException($"Handler is required for endpoint '{endpointName}'")
-        };
+            HandlerType = handlerType
+        });
     }
 }

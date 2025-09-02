@@ -11,16 +11,16 @@ public class AetherSystem
 
     // System inspection properties
     public string SystemName => config.SystemName ?? "Unknown";
-    public string SystemPrefix => config.SystemPrefix ?? "Unknown";
+    public string SystemPrefix => config.SystemPrefix ?? SystemName.ToLowerInvariant().Replace(" ", "-");
     public IReadOnlyList<string> EndpointNames => config.Endpoints.Select(e => e.Name).ToList();
     public IReadOnlyList<string> WorkerNames => config.Workers.Select(w => w.Name).ToList();
     public IReadOnlyList<string> StoreNames => config.Stores.Select(s => s.Name).ToList();
     
     public IReadOnlyDictionary<string, string> EndpointSubjects => 
-        config.Endpoints.ToDictionary(e => e.Name, e => $"sys.{config.SystemPrefix}.{e.Subject}");
+        config.Endpoints.ToDictionary(e => e.Name, e => $"sys.{SystemPrefix}.{e.Subject}");
         
     public IReadOnlyDictionary<string, string> WorkerSubjects =>
-        config.Workers.ToDictionary(w => w.Name, w => $"sys.{config.SystemPrefix}.{w.ListenToPattern ?? w.Name}");
+        config.Workers.ToDictionary(w => w.Name, w => $"sys.{SystemPrefix}.{w.ListenToPattern ?? w.Name.ToLowerInvariant().Replace(" ", "-")}");
     
     public static AetherSystem Create(Action<SystemBuilder> configure)
     {

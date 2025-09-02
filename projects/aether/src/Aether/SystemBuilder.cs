@@ -56,12 +56,16 @@ public class SystemBuilder
         // Validate system configuration
         if (string.IsNullOrWhiteSpace(config.SystemName))
             throw new InvalidOperationException("System name is required. Use .Named() to set the system name.");
+
+        var systemPrefix = config.SystemPrefix;
+        if (string.IsNullOrWhiteSpace(systemPrefix))
+            systemPrefix = config.SystemName.ToLowerInvariant().Replace(" ", "-");
         
-        if (string.IsNullOrWhiteSpace(config.SystemPrefix))
-            throw new InvalidOperationException("System prefix is required. Use .Prefixed() to set the system prefix.");
+        if (!SubjectValidator.IsValid(systemPrefix))
+            throw new InvalidOperationException("Invalid system prefix. Must be a valid NATS subject segment.");
 
         // Validate no duplicate component names
-        var allNames = new List<string>();
+        List<string> allNames = [];
         allNames.AddRange(config.Endpoints.Select(e => e.Name));
         allNames.AddRange(config.Workers.Select(w => w.Name));
         allNames.AddRange(config.Stores.Select(s => s.Name));
@@ -70,21 +74,23 @@ public class SystemBuilder
         if (duplicates.Any())
             throw new InvalidOperationException($"Duplicate component names found: {string.Join(", ", duplicates)}");
 
-        // Validate subjects with SubjectValidator
-        var validator = new SubjectValidator();
-        
-        foreach (var endpoint in config.Endpoints)
-        {
-            if (!validator.IsValid(endpoint.Subject))
-                throw new InvalidOperationException($"Invalid subject '{endpoint.Subject}' for endpoint '{endpoint.Name}'");
-        }
+        // Validate endpoint subjects
+        var invalidEndpoints = config.Endpoints
+            .Where(e => !SubjectValidator.IsValid(e.Subject))
+            .Select(e => e.Subject)
+            .ToList();
+       
+        if (invalidEndpoints.Any())
+            throw new InvalidOperationException($"Invalid endpoints subjects: {string.Join(", ", invalidEndpoints)}");
 
-        foreach (var worker in config.Workers)
-        {
-            var subject = worker.ListenToPattern ?? worker.Name;
-            if (!validator.IsValid(subject))
-                throw new InvalidOperationException($"Invalid subject '{subject}' for worker '{worker.Name}'");
-        }
+        var invalidWorkerSubjects = config.Workers
+            .Where(w => !SubjectValidator.IsValid(w.ListenToPattern ?? w.Name.ToLowerInvariant().Replace(" ", "-")))
+            .Select(w => w.ListenToPattern)
+            .ToList();
+        
+        if (invalidWorkerSubjects.Any())
+            throw new InvalidOperationException($"Invalid workers subjects: {string.Join(", ", invalidWorkerSubjects)}");
+        
     }
 
     private void ProcessSubjectRouting()
@@ -96,7 +102,7 @@ public class SystemBuilder
         foreach (var endpoint in config.Endpoints)
         {
             var fullSubject = $"sys.{config.SystemPrefix}.{endpoint.Subject}";
-            // TODO: Store processed subjects for NATS integration
+            // TODO: Store processed subjects for publishing to named endpoints
         }
 
         foreach (var worker in config.Workers)

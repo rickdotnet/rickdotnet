@@ -2,7 +2,7 @@
 
 public class SubjectValidator
 {
-    public bool IsValid(string subject)
+    public static bool IsValid(string subject)
     {
         if (string.IsNullOrWhiteSpace(subject))
             return false;

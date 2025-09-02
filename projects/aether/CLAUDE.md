@@ -21,6 +21,8 @@ Aether is a distributed systems library for .NET built on top of NATS. The proje
 │   ├── Aether.Extensions.Microsoft.Hosting/  # DI container integration
 │   └── Aether.Providers.NATS/  # NATS implementation
 ├── tests/               # Unit tests
+├── docs/                # Documentation and agent context
+│   └── wip/            # Working directory for agents to add context and dump information
 └── build/               # Build automation
 ```
 
@@ -78,6 +80,7 @@ The project uses a custom build system:
 ### Documentation Strategy
 - Maximize documentation in the repository
 - Use dedicated `docs/` folder for comprehensive documentation
+- Use `docs/wip/` folder for agents to add context and dump information during development
 - Include README files when appropriate for specific components
 
 ### Code Conventions

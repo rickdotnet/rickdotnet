@@ -68,7 +68,7 @@ public class AetherSystemTests
 
             system.AddWorker(worker =>
             {
-                worker.Named("duplicate") // Same name as endpoint
+                worker.Named("duplicate")
                     .Handler<TestOrderProcessor>();
             });
         });

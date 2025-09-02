@@ -1,4 +1,6 @@
+export EDITOR="helix"
 export PATH="$HOME/.local/share/architect/bin:$PATH"
 
-# zed-launcher lauches with WAYLAND_DISPLAY=''
+alias hx='helix'
 alias zed='zed-launcher'
+

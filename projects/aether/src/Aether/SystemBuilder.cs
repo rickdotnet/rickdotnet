@@ -24,7 +24,7 @@ public class SystemBuilder
     {
         var builder = new EndpointBuilder();
         configure(builder);
-        
+
         builder.Build().Resolve(
             onSuccess: success => config.Endpoints.Add(success),
             onError: error => buildErrors.Add(error)
@@ -53,7 +53,7 @@ public class SystemBuilder
             onSuccess: success => config.Stores.Add(success),
             onError: error => buildErrors.Add(error)
         );
-        
+
         return this;
     }
 
@@ -61,12 +61,12 @@ public class SystemBuilder
     {
         var validationResult = ValidateConfiguration();
         validationResult.OnError(error => buildErrors.Add(error));
-            
+
         // no op for now
-                ProcessSubjectRouting();
-                
-        return buildErrors.Any() 
-            ? Result.Error<AetherSystem>($"Build errors: {string.Join("; ", buildErrors)}") 
+        ProcessSubjectRouting();
+
+        return buildErrors.Any()
+            ? Result.Error<AetherSystem>($"Build errors: {string.Join("; ", buildErrors)}")
             : new AetherSystem(config);
     }
 

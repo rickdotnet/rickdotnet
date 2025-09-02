@@ -64,10 +64,9 @@ The project uses a custom build system:
 - **Configuration**: `EndpointConfig` with NATS-specific extensions
 
 ## Dependencies
-- **.NET**: Targets net9.0 and net8.0
+- **.NET**: Targets net9.0
 - **Base Library**: References external `Base` project (RickDotNet.Base)
 - **Testing**: xUnit framework
-- **Extensions**: Microsoft.Extensions.Caching.Memory, Microsoft.Extensions.Primitives
 
 ## Development Guidelines
 

@@ -40,8 +40,8 @@
         var keyPair = KeyPair.CreatePair(PrefixByte.Account);
         seed = keyPair.GetSeed();
         publicKey = keyPair.GetPublicKey();
-        
-        var vaultId = TextUtils.RandomBase32(15);
+
+        var vaultId = RickUtils.RandomBase32(15);
         var claims = new VaultPermissionsJwt
         {
             Issuer = publicKey, // self-signed

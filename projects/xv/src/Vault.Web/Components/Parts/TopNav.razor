@@ -1,0 +1,23 @@
+<XBox
+    TopLeft="Welcome!"
+    TopRight="@DateTime.Now.ToShortTimeString()"
+>
+    @if (isLoggedIn)
+    {
+        <p>this would be a different form</p>
+    }
+    else
+    {
+        <div stack-="column">
+            <p>Select a command:</p>
+            <XButton Size="XSize.Small" Text="xv login --token"/>
+            <XButton Size="XSize.Small" Text="xv login --seed"/>
+            <XButton Size="XSize.Small" Text="xv login --generate"/>
+            <XButton Size="XSize.Small" Text="xv --help"/>
+        </div>
+    }
+</XBox>
+
+@code {
+    private bool isLoggedIn = false; // junk to show logic
+}

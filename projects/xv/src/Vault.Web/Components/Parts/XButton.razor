@@ -1,0 +1,24 @@
+@switch (Size)
+{
+    case XSize.Small:
+        <button size-="small">@Text</button>
+        break;
+    case XSize.Large:
+        <button size-="large">@Text</button>
+        break;
+    case XSize.Default:
+    default:
+        <button>@Text</button>
+        break;
+}
+
+@code {
+
+   [Parameter]
+    public XSize Size { get; set; }
+
+    [Parameter]
+    public string Text { get; set; } = string.Empty;
+
+
+}

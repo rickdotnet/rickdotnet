@@ -1,0 +1,37 @@
+<div box-="square" shear-="both">
+    <div class="flex-between">
+        @if (TopLeft != null)
+        {
+            <span is-="badge" variant-="background0">@TopLeft</span>
+        }
+        @if (TopRight != null)
+        {
+            <span is-="badge" variant-="background0">@TopRight</span>
+        }
+    </div>
+    <div class="content">
+        @if (ChildContent != null)
+        {
+            @ChildContent
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string? TopLeft { get; set; }
+
+    [Parameter]
+    public string? TopRight { get; set; }
+
+    [Parameter]
+    public string? BottomLeft { get; set; }
+
+    [Parameter]
+    public string? BottomRight { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+}

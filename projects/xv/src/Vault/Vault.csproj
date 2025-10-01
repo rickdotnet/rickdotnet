@@ -10,7 +10,10 @@
       <PackageReference Include="NATS.Extensions.Microsoft.DependencyInjection" Version="2.6.3" />
       <PackageReference Include="NATS.Jwt" Version="1.0.0-preview.15" />
       <PackageReference Include="NATS.Net" Version="2.6.3" />
-      <PackageReference Include="RickDotNet.Base" Version="1.1.11" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\base\src\Base\Base.csproj" />
     </ItemGroup>
 
 </Project>

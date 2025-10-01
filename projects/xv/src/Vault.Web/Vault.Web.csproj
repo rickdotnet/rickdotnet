@@ -17,13 +17,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Models\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Htmx\Partials\VaultGet.razor" />
       <_ContentIncludedByDefault Remove="Components\Htmx\Partials\VaultPut.razor" />
       <_ContentIncludedByDefault Remove="Components\Htmx\Partials\VaultResult.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\CommandButton.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\CommandDisplay.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\CommandInfo.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\CommandOutput.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\Forms\CommandInput.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\Forms\CommandSubmit.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\Forms\NavigationButton.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\LinkButton.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\LoadingIndicator.razor" />
+      <_ContentIncludedByDefault Remove="Components\Partials\VaultLoginPrompt.razor" />
     </ItemGroup>
 
 </Project>

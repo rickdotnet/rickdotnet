@@ -1,20 +1,14 @@
 @page "/"
-@using NATS.Jwt.Models
-@using NATS.NKeys
 @inject VaultSettings Settings
 
 <PageTitle>crowdx-vault</PageTitle>
-
-<CommandDisplay Prompt="vault help">
-    <p style="margin-bottom: 0.5rem;">More information is coming. Until then, check out the demo.</p>
-    <LinkButton Text="[demo]" Href="/demo"/>
-</CommandDisplay>
+<TopNav />
 
 
 @code {
-
+    
     protected override void OnInitialized()
     {
-
     }
+
 }

@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
 using NATS.Client.Core;
 using NATS.Client.KeyValueStore;
@@ -6,6 +8,7 @@ using NATS.Extensions.Microsoft.DependencyInjection;
 using NATS.Net;
 using Serilog;
 using Serilog.Events;
+using StarFederation.Datastar.DependencyInjection;
 using Vault.Web.Components;
 
 namespace Vault.Web;
@@ -21,9 +24,13 @@ public static class Startup
         builder.Services
             .AddRazorComponents()
             .AddInteractiveServerComponents();
-
+        
+        builder.Services.AddDatastar();
+        builder.Services.AddTransient(sp => new HtmlRenderer(sp, sp.GetRequiredService<ILoggerFactory>()));
         builder.Services
-            .AddAuthentication("AuthHandler")
+            //.AddAuthentication("AuthHandler")
+            .AddAuthentication()
+            .AddCookie()
             .AddScheme<AuthenticationSchemeOptions, AuthHandler>("AuthHandler", null);
 
         builder.Services
@@ -117,6 +124,7 @@ public static class Startup
         app.UseAuthorization();
 
         app.MapApi();
+        app.MapDataStar();
 
         return app;
     }

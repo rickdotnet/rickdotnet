@@ -1,4 +1,5 @@
 <XBox
+    Id="top-nav"
     TopLeft="Welcome!"
     TopRight="@DateTime.Now.ToShortTimeString()"
 >
@@ -10,10 +11,11 @@
     {
         <div stack-="column">
             <p>Select a command:</p>
-            <XButton Size="XSize.Small" Text="xv login --token"/>
-            <XButton Size="XSize.Small" Text="xv login --seed"/>
-            <XButton Size="XSize.Small" Text="xv login --generate"/>
-            <XButton Size="XSize.Small" Text="xv --help"/>
+            <XButton Size="XSize.Small" Text="xv login --token" DataOnClick="@(FragmentPaths.Login.GetToken)"/>
+            <XButton Size="XSize.Small" Text="xv login --seed" DataOnClick="@(FragmentPaths.Login.GetSeed)"/>
+            <XButton Size="XSize.Small" Text="xv login --generate" DataOnClick="@(FragmentPaths.Login.GetGenerate)"/>
+            <XButton Size="XSize.Small" Text="xv --help" DataOnClick="@(FragmentPaths.Help)"/>
+            
         </div>
     }
 </XBox>

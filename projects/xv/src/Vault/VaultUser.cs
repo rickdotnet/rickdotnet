@@ -17,7 +17,7 @@ public record VaultUser
         UserKey = userKey;
         Claims = claims;
     }
-
+    
     public static Result<VaultUser> FromAuthHeader(string header)
     {
         if(string.IsNullOrWhiteSpace(header))
@@ -27,7 +27,11 @@ public record VaultUser
             return Result.Error<VaultUser>("Invalid Authorization header format");
         
         var token = header.Trim()["Bearer ".Length..].Trim();
-        return JwtUtil.DecodeClaims<VaultPermissionsJwt>(token)
+        return FromToken(token);
+    }
+
+    public static Result<VaultUser> FromToken(string token) 
+        => JwtUtil.DecodeClaims<VaultPermissionsJwt>(token)
             .Bind(natsClaims =>
             {
                 if (natsClaims.Expires < DateTimeOffset.UtcNow)
@@ -44,7 +48,6 @@ public record VaultUser
                 
                 return new VaultUser(natsClaims.Issuer, natsClaims.Subject, vaultClaims);
             });
-    }
 }
 
 public static class VaultUserExtensions

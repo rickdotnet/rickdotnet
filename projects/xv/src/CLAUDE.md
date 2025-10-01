@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-CrowdX Vault is a secure key-value storage system built with .NET 9 and NATS. It provides JWT-based authentication, role-based access control, and a modern web interface using Blazor Server and HTMX.
+CrowdX Vault is a secure key-value storage system built with .NET 9 and NATS. It provides JWT-based authentication, role-based access control, and modern web interfaces. The web application is being rewritten to use a minimal API strategy with DataStar for interactivity and Blazor components for HTML rendering.
 
 ## Technology Stack
 
-- **Backend**: .NET 9 with C#, ASP.NET Core
-- **Frontend**: Blazor Server components with HTMX integration
-- **Styling**: Tailwind CSS v4 
+- **Backend**: .NET 9 with C#, ASP.NET Core Minimal APIs
+- **Frontend**: DataStar for interactivity ([data-star.dev](https://data-star.dev/guide/getting_started)), Blazor components for HTML rendering
+- **Web CLI**: WebTUI ([webtui.ironclad.sh](https://webtui.ironclad.sh/start/intro/)) with DataStar
+- **Styling**: Tailwind CSS v4
 - **Message Broker**: NATS for key-value storage backend
 - **Authentication**: JWT tokens with NATS.Jwt and custom AuthHandler
 - **Logging**: Serilog
@@ -20,8 +21,13 @@ CrowdX Vault is a secure key-value storage system built with .NET 9 and NATS. It
 The solution contains three main projects:
 
 - **Vault**: Core library with business logic, JWT utilities, and NATS integration
-- **Vault.Web**: Blazor Server web application with API endpoints
+- **Vault.Web**: Minimal API with conditional rendering - DataStar for interactivity, Blazor components for HTML (when Accept: text/html), JSON responses (when Accept: application/json)
 - **Vault.Cli**: Command-line tool for vault management and token generation
+
+### Planned Components
+
+- **Web CLI**: Terminal-based interface using WebTUI and DataStar (integrated into Vault.Web)
+- **Traditional CLI**: Enhanced command-line tool mirroring web CLI functionality
 
 ## Build Commands
 

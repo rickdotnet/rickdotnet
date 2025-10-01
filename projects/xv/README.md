@@ -4,6 +4,17 @@
 
 This is an experimental key-vault server that allows for decentralized access-control.
 
+### Architecture
+
+The project is being rewritten with a modern web architecture:
+
+- **Vault.Web**: Minimal API with conditional rendering
+  - DataStar for interactivity ([data-star.dev](https://data-star.dev/guide/getting_started))
+  - Blazor components for HTML rendering
+  - Inspects `Accept` header: `text/html` returns Blazor components, `application/json` returns JSON models
+- **Web CLI**: Terminal-based interface using WebTUI ([webtui.ironclad.sh](https://webtui.ironclad.sh/start/intro/)) and DataStar
+- **Vault.Cli**: Traditional command-line tool (planned)
+
 ### Prerequisites
 
 - NATS Server with JetStream enabled

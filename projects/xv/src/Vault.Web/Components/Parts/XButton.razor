@@ -1,24 +1,30 @@
 @switch (Size)
 {
     case XSize.Small:
-        <button size-="small">@Text</button>
+        <button type="@Type" size-="small" data-on-click=@DataOnClick>@Text</button>
         break;
     case XSize.Large:
-        <button size-="large">@Text</button>
+        <button type="@Type" size-="large">@Text</button>
         break;
     case XSize.Default:
     default:
-        <button>@Text</button>
+        <button type="@Type">@Text</button>
         break;
 }
 
 @code {
 
-   [Parameter]
+    [Parameter]
+    public string Type { get; set; } = "button";
+    
+    [Parameter]
     public XSize Size { get; set; }
 
     [Parameter]
     public string Text { get; set; } = string.Empty;
 
+    [Parameter]
+    public string? DataOnClick { get; set; }
 
+    
 }

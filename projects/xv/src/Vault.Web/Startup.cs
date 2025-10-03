@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.Options;
@@ -29,7 +30,7 @@ public static class Startup
         builder.Services.AddTransient(sp => new HtmlRenderer(sp, sp.GetRequiredService<ILoggerFactory>()));
         builder.Services
             //.AddAuthentication("AuthHandler")
-            .AddAuthentication()
+            .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie()
             .AddScheme<AuthenticationSchemeOptions, AuthHandler>("AuthHandler", null);
 

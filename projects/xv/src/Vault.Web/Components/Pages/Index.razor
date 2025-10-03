@@ -1,15 +1,27 @@
 @page "/"
+@using Vault.Web.Models
 @inject VaultSettings Settings
+@inject IHttpContextAccessor HttpContextAccessor
 
 <PageTitle>crowdx-vault</PageTitle>
 
-<TopNav/>
-<MainContent/>
+<TopNav UserInfo="userInfo" />
+<MainContent UserInfo="userInfo" />
 
 @code {
 
+    private UserInfo? userInfo;
     protected override void OnInitialized()
     {
+        // if user is logged in, pass the info to top nav
+        // and the default vault id to main content, if avail
+
+        var user = HttpContextAccessor.HttpContext?.User;
+        if (string.IsNullOrEmpty(user?.Identity?.Name))
+            return;
+
+        var defaultVault = user.Claims.FirstOrDefault(c => c.Type == "default-vault")?.Value;
+        userInfo = new(user.Identity.Name, defaultVault);
     }
 
 }

@@ -1,15 +1,13 @@
+@using Vault.Web.Models
 <main>
-    <XBox Id="console" TopLeft="Console">
-        <div id="console-input"><p>Nothing to display</p></div>
-        <div id="console-response"></div>
-    </XBox>
+    <Console UserInfo="UserInfo" />
 
-    <VaultScreen VaultId="test" />
-   
+    <VaultScreen VaultId="@UserInfo?.DefaultVault" />
 </main>
 
 
 @code {
-
-
+    
+    [Parameter]
+    public UserInfo? UserInfo { get; set; }
 }

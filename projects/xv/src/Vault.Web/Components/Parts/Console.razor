@@ -1,0 +1,11 @@
+@using Vault.Web.Models
+<XBox Id="console" TopLeft="Console">
+    <ConsoleInput UserInfo="UserInfo" />
+    <div id="console-response"></div>
+</XBox>
+
+@code {
+
+    [Parameter]
+    public UserInfo? UserInfo { get; set; }
+}

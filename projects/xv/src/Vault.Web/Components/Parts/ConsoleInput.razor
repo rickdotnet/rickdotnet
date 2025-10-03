@@ -1,14 +1,26 @@
 @using Vault.Web.Components.Layout
+@using Vault.Web.Models
 @layout FragmentLayout
 
-<div id="console-input" stack-="row">
-    <form method="post" action="/" @formname="consoleInput" data-on-submit__prevent="@("@post('/sse/console', {contentType: 'form'})")">
-        <input name="command" placeholder="xv {command} {options}" value=""/>
-        <XButton Type="submit" Size="XSize.Small" Text="[Submit]"/>
-    </form>
-</div>
+@if (UserInfo == null)
+{
+    <div id="console-input"></div>
+}
+else
+{
+    <div id="console-input" stack-="row">
+        <form method="post" action="/" @formname="consoleInput" data-on-submit__prevent="@("@post('/sse/console', {contentType: 'form'})")">
+            <input name="command" placeholder="xv {command} {options}" value="@Command"/>
+            <XButton Type="submit" Size="XSize.Small" Text="[Submit]"/>
+        </form>
+    </div>
+}
 
 @code {
 
+    [Parameter]
+    public UserInfo? UserInfo { get; set; }
 
+    [Parameter]
+    public string? Command { get; set; }
 }

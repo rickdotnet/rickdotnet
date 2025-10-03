@@ -1,25 +1,35 @@
+@using Vault.Web.Models
 <XBox
     Id="top-nav"
     TopLeft="Welcome!"
     TopRight="@DateTime.Now.ToShortTimeString()"
 >
-    @if (isLoggedIn)
-    {
-        <p>this would be a different form</p>
-    }
-    else
-    {
-        <div stack-="column">
+    <div stack-="column">
+        
+        @if (UserInfo != null)
+        {
+            <blockquote>
+                <p>Public Key: @UserInfo.PublicKey </p>
+                <p>Default Vault: @(UserInfo.DefaultVault ?? "n/a")</p>
+            </blockquote>
+            
+            <p>Select a command:</p>
+            <XButton Size="XSize.Small" Text="xv logout" DataOnClick="@("@get('/sse/logout')")"/>
+        }
+        else
+        {
             <p>Select a command:</p>
             <XButton Size="XSize.Small" Text="xv login --token" DataOnClick="@(FragmentPaths.Login.GetToken)"/>
             <XButton Size="XSize.Small" Text="xv login --seed" DataOnClick="@(FragmentPaths.Login.GetSeed)"/>
             <XButton Size="XSize.Small" Text="xv login --generate" DataOnClick="@(FragmentPaths.Login.GetGenerate)"/>
             <XButton Size="XSize.Small" Text="xv --help" DataOnClick="@(FragmentPaths.Help)"/>
-            
-        </div>
-    }
+        }
+    </div>
 </XBox>
 
 @code {
-    private bool isLoggedIn = false; // junk to show logic
+
+    [Parameter]
+    public UserInfo? UserInfo { get; set; }
+
 }

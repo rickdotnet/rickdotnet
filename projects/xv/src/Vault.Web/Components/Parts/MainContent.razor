@@ -1,13 +1,13 @@
 @using Vault.Web.Models
 <main>
-    <Console UserInfo="UserInfo" />
+    <Console IndexSignals="IndexSignals" />
 
-    <VaultScreen VaultId="@UserInfo?.DefaultVault" />
+    <VaultScreen VaultId="@IndexSignals?.DefaultVault" />
 </main>
 
 
 @code {
     
     [Parameter]
-    public UserInfo? UserInfo { get; set; }
+    public IndexSignals? IndexSignals { get; set; }
 }

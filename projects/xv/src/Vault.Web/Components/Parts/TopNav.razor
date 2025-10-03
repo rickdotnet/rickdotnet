@@ -6,11 +6,11 @@
 >
     <div stack-="column">
         
-        @if (UserInfo != null)
+        @if (IndexSignals != null)
         {
             <blockquote>
-                <p>Public Key: @UserInfo.PublicKey </p>
-                <p>Default Vault: @(UserInfo.DefaultVault ?? "n/a")</p>
+                <p>Public Key: <span>@IndexSignals.PublicKey</span> </p>
+                <p>Default Vault: @(IndexSignals.DefaultVault ?? "n/a")</p>
             </blockquote>
             
             <p>Select a command:</p>
@@ -19,10 +19,10 @@
         else
         {
             <p>Select a command:</p>
-            <XButton Size="XSize.Small" Text="xv login --token" DataOnClick="@(FragmentPaths.Login.GetToken)"/>
-            <XButton Size="XSize.Small" Text="xv login --seed" DataOnClick="@(FragmentPaths.Login.GetSeed)"/>
-            <XButton Size="XSize.Small" Text="xv login --generate" DataOnClick="@(FragmentPaths.Login.GetGenerate)"/>
-            <XButton Size="XSize.Small" Text="xv --help" DataOnClick="@(FragmentPaths.Help)"/>
+            <XButton Text="xv login --token" DataOnClick="@(FragmentPaths.Login.GetToken)"/>
+            <XButton Text="xv login --seed" DataOnClick="@(FragmentPaths.Login.GetSeed)"/>
+            <XButton Text="xv login --generate" DataOnClick="@(FragmentPaths.Login.GetGenerate)"/>
+            <XButton Text="xv --help" DataOnClick="@(FragmentPaths.Help)"/>
         }
     </div>
 </XBox>
@@ -30,6 +30,6 @@
 @code {
 
     [Parameter]
-    public UserInfo? UserInfo { get; set; }
+    public IndexSignals? IndexSignals { get; set; }
 
 }

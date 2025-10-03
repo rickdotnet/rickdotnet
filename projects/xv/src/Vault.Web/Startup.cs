@@ -11,6 +11,7 @@ using Serilog;
 using Serilog.Events;
 using StarFederation.Datastar.DependencyInjection;
 using Vault.Web.Components;
+using Vault.Web.Routing;
 
 namespace Vault.Web;
 
@@ -23,8 +24,7 @@ public static class Startup
             .WithConfig();
 
         builder.Services
-            .AddRazorComponents()
-            .AddInteractiveServerComponents();
+            .AddRazorComponents();
         
         builder.Services.AddDatastar();
         builder.Services.AddTransient(sp => new HtmlRenderer(sp, sp.GetRequiredService<ILoggerFactory>()));

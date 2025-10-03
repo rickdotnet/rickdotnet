@@ -5,12 +5,12 @@
 
 <PageTitle>crowdx-vault</PageTitle>
 
-<TopNav UserInfo="userInfo" />
-<MainContent UserInfo="userInfo" />
+<TopNav IndexSignals="indexSignals" />
+<MainContent IndexSignals="indexSignals" />
 
 @code {
 
-    private UserInfo? userInfo;
+    private IndexSignals? indexSignals;
     protected override void OnInitialized()
     {
         // if user is logged in, pass the info to top nav
@@ -21,7 +21,7 @@
             return;
 
         var defaultVault = user.Claims.FirstOrDefault(c => c.Type == "default-vault")?.Value;
-        userInfo = new(user.Identity.Name, defaultVault);
+        //userInfo = new(user.Identity.Name, defaultVault);
     }
 
 }

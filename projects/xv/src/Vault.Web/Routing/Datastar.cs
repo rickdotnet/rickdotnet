@@ -1,20 +1,16 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Mvc;
 using NATS.NKeys;
-using RickDotNet.Base.Utils;
-using RickDotNet.Extensions.Base;
+using StarFederation.Datastar;
 using StarFederation.Datastar.DependencyInjection;
-using Vault.Web.Components.Fragments;
 using Vault.Web.Components.Parts;
 using Vault.Web.Models;
 
-namespace Vault.Web;
+namespace Vault.Web.Routing;
 
-public static class Api2
+public static class Datastar
 {
     public static void MapDataStar(this IEndpointRouteBuilder app)
     {
@@ -82,8 +78,13 @@ public static class Api2
                 });
             
             Dictionary<string, object?> userInfoParams = [];
-            userInfoParams["UserInfo"] = new UserInfo(userPublic, vaultId);
+            userInfoParams["IndexSignals"] = new IndexSignals
+            {
+                PublicKey = userPublic,
+                DefaultVault = vaultId
+            };
 
+            
             var html = await htmlRenderer.RenderHtmlAsync<ConsoleInput>(userInfoParams);
             await datastarService.PatchElementsAsync(html, cancellationToken);
             
@@ -110,7 +111,19 @@ public static class Api2
         HttpContext ctx,
         CancellationToken cancellationToken)
     {
+        // if command == login, then handle login
+        // if success, render index with div pointing to SSE endpoint
+        // if failure, update error message signal 
+        
+        // all other commands require a logged in user
         var user = ctx.User;
+        
+        // if they are not logged in, set error message signal
+        // and flip the submitting flag
+        
+        // if they are logged in
+        // run command and patch front-end
+        
         var htmlRenderer = ctx.RequestServices.GetRequiredService<HtmlRenderer>();
         var datastarService = ctx.RequestServices.GetRequiredService<IDatastarService>();
 
@@ -125,6 +138,15 @@ public static class Api2
         userInfoParams["UserInfo"] = userInfo;
 
         // handle command and stream result back as necessary
+        var html = await htmlRenderer.RenderHtmlAsync<ConsoleInput>(userInfoParams);
+        await datastarService.PatchElementsAsync(html, new PatchElementsOptions
+        {
+            Selector = null,
+            PatchMode = ElementPatchMode.Outer,
+            UseViewTransition = false,
+            EventId = null,
+            Retry = default
+        }, cancellationToken);
     }
 
     private static async Task HandleVault(
@@ -154,3 +176,4 @@ public static class Api2
         return Results.Content(fullHtml, "text/html");
     }
 }
+

@@ -2,16 +2,19 @@
 @using Vault.Web.Models
 @layout FragmentLayout
 
-@if (UserInfo == null)
+@if (IndexSignals == null)
 {
     <div id="console-input"></div>
 }
 else
 {
-    <div id="console-input" stack-="row">
-        <form method="post" action="/" @formname="consoleInput" data-on-submit__prevent="@("@post('/sse/console', {contentType: 'form'})")">
-            <input name="command" placeholder="xv {command} {options}" value="@Command"/>
-            <XButton Type="submit" Size="XSize.Small" Text="[Submit]"/>
+    <div id="console-input">
+        <form method="post" action="/" @formname="consoleInput"
+              data-on-submit__prevent="@("@post('/sse/console', {contentType: 'form'})")">
+            <div id="console-input" stack-="column">
+                <input name="command" placeholder="xv {command} {options}" value="@Command"/>
+                <XButton Type="submit" Size="XSize.Small" Text="[Submit]"/>
+            </div>
         </form>
     </div>
 }
@@ -19,8 +22,9 @@ else
 @code {
 
     [Parameter]
-    public UserInfo? UserInfo { get; set; }
+    public IndexSignals? IndexSignals { get; set; }
 
     [Parameter]
-    public string? Command { get; set; }
+    public string Command { get; set; } = "";
+
 }

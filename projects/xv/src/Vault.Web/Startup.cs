@@ -27,7 +27,7 @@ public static class Startup
             .AddRazorComponents();
         
         builder.Services.AddDatastar();
-        builder.Services.AddTransient(sp => new HtmlRenderer(sp, sp.GetRequiredService<ILoggerFactory>()));
+        builder.Services.AddScoped(sp => new HtmlRenderer(sp, sp.GetRequiredService<ILoggerFactory>()));
         builder.Services
             //.AddAuthentication("AuthHandler")
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

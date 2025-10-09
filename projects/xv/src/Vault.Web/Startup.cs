@@ -119,11 +119,11 @@ public static class Startup
         app.UseHttpsRedirection();
         app.UseAntiforgery();
         app.MapStaticAssets();
-        app.MapRazorComponents<App>();//.AddInteractiveServerRenderMode();
-        app.MapFallbackToFile("index.html");
+        // app.MapFallbackToFile("index.html");
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.MapPages();
         app.MapApi();
         app.MapDataStar();
 

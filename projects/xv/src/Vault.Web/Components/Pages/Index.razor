@@ -1,27 +1,18 @@
-@page "/"
 @using Vault.Web.Models
-@inject VaultSettings Settings
-@inject IHttpContextAccessor HttpContextAccessor
 
 <PageTitle>crowdx-vault</PageTitle>
 
-<TopNav IndexSignals="indexSignals" />
-<MainContent IndexSignals="indexSignals" />
+<TopNav IndexSignals="IndexSignals" />
+<MainContent IndexSignals="IndexSignals" />
 
 @code {
 
-    private IndexSignals? indexSignals;
+    [Parameter]
+    public IndexSignals? IndexSignals { get; set; }
+    
     protected override void OnInitialized()
     {
-        // if user is logged in, pass the info to top nav
-        // and the default vault id to main content, if avail
-
-        var user = HttpContextAccessor.HttpContext?.User;
-        if (string.IsNullOrEmpty(user?.Identity?.Name))
-            return;
-
-        var defaultVault = user.Claims.FirstOrDefault(c => c.Type == "default-vault")?.Value;
-        //userInfo = new(user.Identity.Name, defaultVault);
+        
     }
 
 }

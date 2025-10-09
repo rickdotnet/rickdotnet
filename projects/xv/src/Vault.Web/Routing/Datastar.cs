@@ -1,12 +1,15 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using NATS.NKeys;
 using StarFederation.Datastar;
 using StarFederation.Datastar.DependencyInjection;
+using Vault.Web.Components.Layout;
 using Vault.Web.Components.Parts;
 using Vault.Web.Models;
+using Index = Vault.Web.Components.Pages.Index;
 
 namespace Vault.Web.Routing;
 
@@ -76,7 +79,7 @@ public static class Datastar
                     IsPersistent = true, // Persist the cookie across sessions
                     ExpiresUtc = DateTimeOffset.UtcNow.AddHours(1) // Set expiration
                 });
-            
+
             Dictionary<string, object?> userInfoParams = [];
             userInfoParams["IndexSignals"] = new IndexSignals
             {
@@ -84,13 +87,13 @@ public static class Datastar
                 DefaultVault = vaultId
             };
 
-            
+
             var html = await htmlRenderer.RenderHtmlAsync<ConsoleInput>(userInfoParams);
             await datastarService.PatchElementsAsync(html, cancellationToken);
-            
+
             html = await htmlRenderer.RenderHtmlAsync<TopNav>(userInfoParams);
             await datastarService.PatchElementsAsync(html, cancellationToken);
-            
+
             Dictionary<string, object?> vaultParams = [];
             vaultParams["VaultId"] = vaultId;
             html = await htmlRenderer.RenderHtmlAsync<VaultScreen>(vaultParams);
@@ -114,16 +117,16 @@ public static class Datastar
         // if command == login, then handle login
         // if success, render index with div pointing to SSE endpoint
         // if failure, update error message signal 
-        
+
         // all other commands require a logged in user
         var user = ctx.User;
-        
+
         // if they are not logged in, set error message signal
         // and flip the submitting flag
-        
+
         // if they are logged in
         // run command and patch front-end
-        
+
         var htmlRenderer = ctx.RequestServices.GetRequiredService<HtmlRenderer>();
         var datastarService = ctx.RequestServices.GetRequiredService<IDatastarService>();
 
@@ -155,25 +158,7 @@ public static class Datastar
     {
         // get vault id from url
         // bust out aether for vault events
-        
     }
-    private static async Task<IResult> HandlePage(
-        HttpContext ctx,
-        CancellationToken cancellationToken)
-    {
 
-        // could return datastar divs and have them subsequently
-        // hit their own respective routes
-        var fullHtml = $@"
-            <div id=""welcome"">
-                
-            </div>
-            <div id=""console-input"">
-               
-            </div>
-        ";
-
-        return Results.Content(fullHtml, "text/html");
-    }
+    
 }
-

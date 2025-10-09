@@ -1,22 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-webtui-theme="dark">
+
 <head>
-    <meta charset="utf-8" />
-    <title>crowdx-vault</title>
+    <meta charset="utf-8"/>
+    <base href="/"/>
     <link rel="stylesheet" href="app.css" />
-    <script src="https://unpkg.com/htmx.org@2.0.6/dist/htmx.min.js"></script>
-    <script src="https://unpkg.com/htmx-ext-json-enc@2.0.1/json-enc.js"></script>
+
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js" ></script>
 </head>
+
 <body>
-<header class="terminal-nav">
-    <span style="color: var(--terminal-green);">crowdx-vault@terminal:~$</span>
-    <nav style="display: inline-block; margin-left: 2rem;">
-        <a href="https://github.com/rickdotnet/crowdx-vault" target="_blank">[github]</a>
-    </nav>
-</header>
-<main id="content" hx-get="/htmx/home" hx-trigger="load" class="terminal-container">
-    <!-- Initial content loaded by htmx -->
-</main>
+<div id="app" data-on-load="@get('/pages/index')">Loading...</div>
 
 </body>
+
 </html>

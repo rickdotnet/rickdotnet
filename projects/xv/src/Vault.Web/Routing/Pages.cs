@@ -6,9 +6,9 @@ using Vault.Web.Models;
 
 namespace Vault.Web.Routing;
 
-public static class Pages
+public static class App
 {
-    public static void MapPages(this IEndpointRouteBuilder app)
+    public static void MapApp(this IEndpointRouteBuilder app)
     {
         app.MapIndex();
     }
@@ -23,28 +23,8 @@ public static class Pages
         CancellationToken cancellationToken)
     {
         var htmlRenderer = ctx.RequestServices.GetRequiredService<HtmlRenderer>();
-        // var datastarService = ctx.RequestServices.GetRequiredService<IDatastarService>();
-
-        var indexSignals = new IndexSignals
-        {
-            PublicKey = "abc123",
-            DefaultVault = "abc123"
-        };
         
-        
-        RenderFragment indexFragment = builder =>
-        {
-            builder.OpenComponent<Vault.Web.Components.Pages.Index>(0);
-            builder.AddAttribute(1, "IndexSignals", indexSignals);
-            builder.CloseComponent();
-        };
-
-        var layoutParams = new Dictionary<string, object?>
-        {
-            ["Body"] = indexFragment
-        };
-
-        var fullHtml = await htmlRenderer.RenderHtmlAsync<MainLayout>(layoutParams);
-        return Results.Content(fullHtml, "text/html");
+         var fullHtml = await htmlRenderer.RenderHtmlAsync<MainLayout>();
+         return Results.Content(fullHtml, "text/html");
     }
 }

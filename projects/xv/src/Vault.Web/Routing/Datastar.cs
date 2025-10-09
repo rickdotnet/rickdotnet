@@ -17,7 +17,14 @@ public static class Datastar
 {
     public static void MapDataStar(this IEndpointRouteBuilder app)
     {
+        app.MapPages();
         app.MapSSE();
+    }
+
+    private static void MapPages(this IEndpointRouteBuilder app)
+    {
+        app.MapGet("/pages/index", HandleIndex);
+        
     }
 
     private static void MapSSE(this IEndpointRouteBuilder api)
@@ -25,6 +32,40 @@ public static class Datastar
         var demo = api.MapGroup("/sse");
         demo.MapPost("login", HandleLogin);
         demo.MapPost("console", HandleConsole).RequireAuthorization();
+    }
+
+    private static async Task HandleIndex(
+        HttpContext ctx,
+        CancellationToken cancellationToken)
+    {
+        var htmlRenderer = ctx.RequestServices.GetRequiredService<HtmlRenderer>();
+        var datastarService = ctx.RequestServices.GetRequiredService<IDatastarService>();
+
+        var indexSignals = new IndexSignals
+        {
+            PublicKey = "abc123",
+            DefaultVault = "abc123"
+        };
+        
+        var indexParams = new Dictionary<string, object?>
+        {
+            ["IndexSignals"] = indexSignals
+        };
+        
+        
+        var indexHtml = await htmlRenderer.RenderHtmlAsync<Index>(indexParams);
+        var appHtml =
+            $"""
+            <div id="app">
+            {indexHtml}
+            </div>
+            """;
+        
+        // patch signals
+        // need to rework the components to use signals
+        
+        // then patch elements
+        await datastarService.PatchElementsAsync(appHtml, cancellationToken);
     }
 
     private static async Task HandleLogin(

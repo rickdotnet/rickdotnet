@@ -11,16 +11,15 @@
     <ImportMap/>
 
     <link rel="icon" type="image/png" href="favicon.png"/>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
     <HeadOutlet/>
 </head>
 
 <body>
-<div id="app">
-    @Body
-</div>
-
-<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.0-RC.5/bundles/datastar.js"></script>
+@((MarkupString)"<div id=\"app\" data-on-load=\"@get('/pages/index')\"></div>")
 </body>
+
+
 
 </html>
 

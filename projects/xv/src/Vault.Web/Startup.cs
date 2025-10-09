@@ -118,12 +118,12 @@ public static class Startup
 
         app.UseHttpsRedirection();
         app.UseAntiforgery();
-        app.MapStaticAssets();
-        // app.MapFallbackToFile("index.html");
+        app.MapStaticAssets(); 
+        //app.MapFallbackToFile("index.html");
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapPages();
+        app.MapApp();
         app.MapApi();
         app.MapDataStar();
 

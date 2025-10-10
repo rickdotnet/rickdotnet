@@ -1,13 +1,11 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using NATS.NKeys;
-using StarFederation.Datastar;
 using StarFederation.Datastar.DependencyInjection;
-using Vault.Web.Components.Layout;
-using Vault.Web.Components.Parts;
+using Vault.Web.Components.Fragments;
+using Vault.Web.Components.Layouts.Sections;
 using Vault.Web.Models;
 using Index = Vault.Web.Components.Pages.Index;
 
@@ -24,12 +22,11 @@ public static class Datastar
     private static void MapPages(this IEndpointRouteBuilder app)
     {
         app.MapGet("/pages/index", HandleIndex);
-        
     }
 
     private static void MapSSE(this IEndpointRouteBuilder api)
     {
-        var demo = api.MapGroup("/sse");
+        var demo = api.MapGroup("/star");
         demo.MapPost("login", HandleLogin);
         demo.MapPost("console", HandleConsole).RequireAuthorization();
     }
@@ -41,19 +38,13 @@ public static class Datastar
         var htmlRenderer = ctx.RequestServices.GetRequiredService<HtmlRenderer>();
         var datastarService = ctx.RequestServices.GetRequiredService<IDatastarService>();
 
-        var indexSignals = new IndexSignals
+        var indexSignals = new UserSignals
         {
             PublicKey = "abc123",
             DefaultVault = "abc123"
         };
         
-        var indexParams = new Dictionary<string, object?>
-        {
-            ["IndexSignals"] = indexSignals
-        };
-        
-        
-        var indexHtml = await htmlRenderer.RenderHtmlAsync<Index>(indexParams);
+        var indexHtml = await htmlRenderer.RenderHtmlAsync<Index>();
         var appHtml =
             $"""
             <div id="app">
@@ -63,9 +54,22 @@ public static class Datastar
         
         // patch signals
         // need to rework the components to use signals
+        await datastarService.PatchSignalsAsync(indexSignals, cancellationToken);
         
         // then patch elements
         await datastarService.PatchElementsAsync(appHtml, cancellationToken);
+        
+        // need to patch the commands
+        // can make use of the default vault
+        // to build the 'xv open --vault' command.
+        var commandParams = new Dictionary<string, object?>
+        {
+            [nameof(DefaultCommands.SignedIn)] = true,
+            [nameof(DefaultCommands.DefaultVaultId)] = "abc123"
+        };
+
+        var commandsHtml = await htmlRenderer.RenderHtmlAsync<DefaultCommands>(commandParams);
+        await datastarService.PatchElementsAsync(commandsHtml, cancellationToken);
     }
 
     private static async Task HandleLogin(
@@ -122,17 +126,13 @@ public static class Datastar
                 });
 
             Dictionary<string, object?> userInfoParams = [];
-            userInfoParams["IndexSignals"] = new IndexSignals
+            userInfoParams["IndexSignals"] = new UserSignals
             {
                 PublicKey = userPublic,
                 DefaultVault = vaultId
             };
-
-
-            var html = await htmlRenderer.RenderHtmlAsync<ConsoleInput>(userInfoParams);
-            await datastarService.PatchElementsAsync(html, cancellationToken);
-
-            html = await htmlRenderer.RenderHtmlAsync<TopNav>(userInfoParams);
+            
+            var html = await htmlRenderer.RenderHtmlAsync<HeaderSection>(userInfoParams);
             await datastarService.PatchElementsAsync(html, cancellationToken);
 
             Dictionary<string, object?> vaultParams = [];
@@ -177,20 +177,7 @@ public static class Datastar
                 user.Identity.Name,
                 user.Claims.FirstOrDefault(c => c.Type == "default-vault")?.Value
             );
-
-        Dictionary<string, object?> userInfoParams = [];
-        userInfoParams["UserInfo"] = userInfo;
-
-        // handle command and stream result back as necessary
-        var html = await htmlRenderer.RenderHtmlAsync<ConsoleInput>(userInfoParams);
-        await datastarService.PatchElementsAsync(html, new PatchElementsOptions
-        {
-            Selector = null,
-            PatchMode = ElementPatchMode.Outer,
-            UseViewTransition = false,
-            EventId = null,
-            Retry = default
-        }, cancellationToken);
+        
     }
 
     private static async Task HandleVault(

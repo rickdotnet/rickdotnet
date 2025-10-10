@@ -1,0 +1,7 @@
+<XButton Text="@Command" DataOnClick="@($"$CurrentCommand = '{Command}'")" />
+
+@code {
+
+    [Parameter]
+    public string Command { get; set; } = string.Empty;
+}

@@ -21,6 +21,9 @@ tr, td, th {
     padding-right: 2ch;
 }
 
+#commands {
+    padding-top: 1lh;
+}
 #console-response {
     padding-top: 1lh;
 }

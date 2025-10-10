@@ -1,4 +1,4 @@
-namespace Vault.Web.Components;
+namespace Vault.Web.Components.Fragments;
 
 public enum XSize
 {

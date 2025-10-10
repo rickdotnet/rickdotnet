@@ -31,6 +31,20 @@
       <_ContentIncludedByDefault Remove="Components\Partials\LinkButton.razor" />
       <_ContentIncludedByDefault Remove="Components\Partials\LoadingIndicator.razor" />
       <_ContentIncludedByDefault Remove="Components\Partials\VaultLoginPrompt.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Demo\Generate.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Demo\PreLogin.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Demo\Seed.razor" />
+      <_ContentIncludedByDefault Remove="Components\Pages\Demo\Token.razor" />
+      <_ContentIncludedByDefault Remove="Components\Sections\ConsoleSection.razor" />
+      <_ContentIncludedByDefault Remove="Components\Sections\HeaderSection.razor" />
+      <_ContentIncludedByDefault Remove="Components\Sections\Section.razor" />
+      <_ContentIncludedByDefault Remove="Components\Sections\VaultSection.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Components\Layouts\Sections\ConsoleSection.razor" />
+      <AdditionalFiles Include="Components\Layouts\Sections\HeaderSection.razor" />
+      <AdditionalFiles Include="Components\Layouts\Sections\Section.razor" />
     </ItemGroup>
 
 </Project>

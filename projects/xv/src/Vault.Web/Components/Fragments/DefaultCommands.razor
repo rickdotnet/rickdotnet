@@ -1,0 +1,33 @@
+@if (SignedIn)
+{
+    <div id="commands" stack-="column">
+        <p>Select a command:</p>
+        @if (!string.IsNullOrEmpty(DefaultVaultId))
+        {
+            <SetCommandButton Command="@($"xv open --vault \"{DefaultVaultId}\"")" />
+        }
+        <SetCommandButton Command="xv logout"/>
+        <SetCommandButton Command="xv --help"/>
+    </div>
+}
+else
+{
+    <div id="commands" stack-="column">
+        <p>Select a command:</p>
+        <SetCommandButton Command="xv login --token"/>
+        <SetCommandButton Command="xv login --seed"/>
+        <SetCommandButton Command="xv login --generate"/>
+        <SetCommandButton Command="xv --help"/>
+    </div>
+}
+
+@code {
+
+    // signedIn?
+    [Parameter]
+    public bool SignedIn { get; set; }
+
+    [Parameter]
+    public string? DefaultVaultId { get; set; }
+
+}

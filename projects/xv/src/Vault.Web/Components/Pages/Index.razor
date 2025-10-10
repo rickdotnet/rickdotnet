@@ -1,14 +1,11 @@
-@using Vault.Web.Models
 
-<PageTitle>crowdx-vault</PageTitle>
-
-<TopNav IndexSignals="IndexSignals" />
-<MainContent IndexSignals="IndexSignals" />
+<main>
+    <HeaderSection/>
+    <ConsoleSection />
+    <VaultSection />
+</main>
 
 @code {
-
-    [Parameter]
-    public IndexSignals? IndexSignals { get; set; }
     
     protected override void OnInitialized()
     {

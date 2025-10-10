@@ -1,6 +1,6 @@
 namespace Vault.Web.Models;
 
-public record IndexSignals
+public record UserSignals
 {
     public bool SignedIn => !string.IsNullOrEmpty(PublicKey);
     public string? PublicKey { get; init; }

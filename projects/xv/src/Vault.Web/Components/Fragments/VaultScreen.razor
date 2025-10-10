@@ -1,11 +1,11 @@
 
 @if (string.IsNullOrEmpty(VaultId))
 {
-    <div id="vault-screen"></div>
+    
 }
 else
 {
-    <XBox Id="vault-screen" TopLeft="@($"Vault - {VaultId}")">
+    <Section Id="vault-abc123" Header="@($"Vault - {VaultId}")">
         <table>
             <thead>
             <tr>
@@ -24,7 +24,7 @@ else
             </tr>
             </tbody>
         </table>
-    </XBox>
+    </Section>
 }
 
 @code {

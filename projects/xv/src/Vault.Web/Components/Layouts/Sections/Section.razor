@@ -1,0 +1,26 @@
+<div id="@Id" box-="square" shear-="both">
+    <div class="flex-between">
+        @if (Header != null)
+        {
+            <span is-="badge" variant-="background0">@Header</span>
+        }
+    </div>
+    <div class="content">
+        @if (ChildContent != null)
+        {
+            @ChildContent
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Id { get; set; } = Guid.NewGuid().ToString(); 
+
+    [Parameter]
+    public string? Header { get; set; }
+    
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

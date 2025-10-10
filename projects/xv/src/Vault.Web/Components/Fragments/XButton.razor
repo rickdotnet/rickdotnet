@@ -4,11 +4,11 @@
         <button type="@Type" size-="small" data-on-click=@DataOnClick>@Text</button>
         break;
     case XSize.Large:
-        <button type="@Type" size-="large">@Text</button>
+        <button type="@Type" size-="large" data-on-click=@DataOnClick>@Text</button>
         break;
     case XSize.Default:
     default:
-        <button type="@Type">@Text</button>
+        <button type="@Type" data-on-click=@DataOnClick>@Text</button>
         break;
 }
 
@@ -22,9 +22,7 @@
 
     [Parameter]
     public string Text { get; set; } = string.Empty;
-
+    
     [Parameter]
     public string? DataOnClick { get; set; }
-
-    
 }

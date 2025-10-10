@@ -1,0 +1,17 @@
+
+<Section Id="console-section" Header="Console">
+    <div id="console-input">
+        <form method="post" action="/" @formname="consoleInput"
+              data-on-submit__prevent="@("@post('/star/console', {contentType: 'form'})")">
+            <div stack-="column">
+                <input name="command" placeholder="xv {command} {options}" data-bind="CurrentCommand"/>
+                <XButton Type="submit" Text="[Submit]"/>
+            </div>
+        </form>
+    </div>
+    <div id="console-response"></div>
+</Section>
+
+@code {
+
+}

@@ -123,8 +123,8 @@ public static class Startup
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapApp();
         app.MapApi();
+        app.MapApp();
         app.MapDataStar();
 
         return app;

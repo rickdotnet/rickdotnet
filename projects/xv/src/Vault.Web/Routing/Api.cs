@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using NATS.Client.KeyValueStore;
-using RickDotNet.Base.Utils;
 using RickDotNet.Extensions.Base;
 
-namespace Vault.Web;
+namespace Vault.Web.Routing;
 
 public static class Api
 {

@@ -1,0 +1,8 @@
+export EDITOR="helix"
+export PATH="$HOME/.local/share/architect/bin:$PATH"
+
+alias hx='helix'
+alias nvim='helix'
+alias vim='helix'
+alias zed='zed-launcher'
+

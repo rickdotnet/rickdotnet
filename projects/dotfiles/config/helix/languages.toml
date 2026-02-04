@@ -1,0 +1,9 @@
+[language-server.csharp-ls]
+command = "csharp-ls"
+environment = { "DOTNET_ROOT" = "/usr/share/dotnet" }
+
+[[language]]
+name = "c-sharp"
+language-servers = ["csharp-ls"]
+formatter = { command = "csharpier", args = ["format", "--write-stdout"] }
+auto-format = true

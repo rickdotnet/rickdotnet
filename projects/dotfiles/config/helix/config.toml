@@ -1,0 +1,32 @@
+theme = "catppuccin_mocha"
+
+[keys.normal]
+space.f = "file_picker_in_current_directory"
+space.F = "file_picker"
+S-i = "insert_mode"
+i = "move_line_up"
+k = "move_line_down"
+j = "move_char_left"
+l = "move_char_right"
+g.j = "goto_line_start"
+g.l = "goto_line_end"
+C-w = ":write"
+C-q = ":quit"
+
+[keys.select]
+space.f = "file_picker_in_current_directory"
+space.F = "file_picker"
+S-i = "insert_mode"
+i = "extend_line_up"
+k = "extend_line_down"
+j = "extend_char_left"
+l = "extend_char_right"
+g.j = "goto_line_start"
+g.l = "goto_line_end"
+C-w = ":write"
+C-q = ":quit"
+
+[keys.insert]
+j.k = "normal_mode"
+C-w = ":write"
+C-q = ":quit"
